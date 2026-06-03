@@ -36,28 +36,70 @@
     backdrop-filter: blur(12px);
     border-bottom: 1.5px solid var(--gold);
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0 40px; height: 64px;
+    padding: 0 24px; height: 64px;
   }
   .nav-logo {
     font-family: 'Playfair Display', serif;
     color: var(--gold-light);
-    font-size: 1.15rem;
+    font-size: 1rem;
     letter-spacing: 0.02em;
     font-weight: 700;
+    flex-shrink: 0;
   }
   .nav-logo span { color: var(--white); font-weight: 300; }
-  .nav-links { display: flex; gap: 6px; }
+
+  /* Hamburger */
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px;
+    background: none; border: none; cursor: pointer; padding: 6px;
+    z-index: 200;
+  }
+  .hamburger span {
+    display: block; width: 24px; height: 2px;
+    background: var(--gold-light); border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* Desktop nav */
+  .nav-links { display: flex; gap: 4px; flex-wrap: nowrap; }
   .nav-links button {
     background: none; border: none; cursor: pointer;
     color: rgba(255,255,255,0.75);
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 0.85rem; font-weight: 500;
-    padding: 7px 16px; border-radius: 50px;
+    font-size: 0.78rem; font-weight: 500;
+    padding: 6px 12px; border-radius: 50px;
     transition: all 0.25s;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
   }
   .nav-links button:hover { color: var(--gold-light); background: rgba(201,169,75,0.12); }
   .nav-links button.active { color: var(--green-dark); background: var(--gold-light); font-weight: 600; }
+
+  /* Mobile drawer */
+  @media (max-width: 750px) {
+    .hamburger { display: flex; }
+    .nav-links {
+      display: none;
+      position: fixed; top: 64px; left: 0; right: 0;
+      background: rgba(26,58,42,0.98);
+      backdrop-filter: blur(12px);
+      flex-direction: column; gap: 0;
+      border-bottom: 1.5px solid var(--gold);
+      padding: 12px 0;
+      z-index: 150;
+    }
+    .nav-links.open { display: flex; }
+    .nav-links button {
+      width: 100%; text-align: left;
+      border-radius: 0; padding: 14px 24px;
+      font-size: 0.95rem;
+      border-bottom: 1px solid rgba(201,169,75,0.08);
+    }
+    .nav-links button.active { background: rgba(201,169,75,0.15); color: var(--gold-light); }
+  }
 
   /* PAGES */
   .page { display: none; padding-top: 64px; min-height: 100vh; animation: fadeIn 0.4s ease; }
@@ -488,15 +530,19 @@
 <body>
 
 <nav>
-  <div class="nav-logo">OSIS <span>SMP Taman Siswa Batam</span></div>
-  <div class="nav-links">
+  <div style="display:flex;align-items:center;gap:10px;"><img src="data:image/png;base64,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" style="width:36px;height:36px;object-fit:contain;mix-blend-mode:screen;" alt="Logo Taman Siswa"><div class="nav-logo">OSIS <span>SMP Taman Siswa Batam</span></div></div>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-links" id="navLinks">
     <button class="active" onclick="showPage('beranda', this)">Beranda</button>
     <button onclick="showPage('osis', this)">OSIS</button>
     <button onclick="showPage('program', this)">Program</button>
     <button onclick="showPage('sosmed', this)">Sosial Media</button>
     <button onclick="showPage('hubungi', this)">Hubungi</button>
-    <button onclick="showPage('daftar', this)">Pendaftaran</button>
+    <button onclick="showPage('daftar', this)">Pendaftaran OSIS</button>
     <button onclick="showPage('mpls', this)">MPLS</button>
+    <button onclick="showPage('spmb', this)">SPMB</button>
   </div>
 </nav>
 
@@ -506,8 +552,8 @@
   <div class="hero">
     <div class="hero-content">
       <div class="hero-badge">Est. 1922 · Yogyakarta</div>
-      <h1 class="hero-title">Smp <span class="accent"> Taman Siswa Batam</span></h1>
-      <p class="hero-sub">Perguruan Taman Siswa Batam </p>
+      <h1 class="hero-title">SMP TAMAN SISWA <span class="accent">BATAM</span></h1>
+      <p class="hero-sub">Perguruan Taman Siswa Batam</p>
       <p class="hero-slogan">"Salam Dan Bahagia"</p>
       <button class="hero-btn" onclick="showPage('osis', document.querySelector('.nav-links button:nth-child(2)'))">Kenali OSIS Kami</button>
     </div>
@@ -639,6 +685,179 @@
           @altsmer
         </a>
       </div>
+    </div>
+  </div>
+
+
+  <!-- Struktur Organisasi -->
+  <div style="background:#F8FAF8;padding:70px 40px;">
+    <div style="max-width:1000px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:50px;">
+        <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#4A8C5C;margin-bottom:10px;">Kepengurusan</div>
+        <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.6rem);color:#1A3A2A;margin-bottom:8px;">Struktur <span style="color:#C9A94B;">Organisasi</span></h2>
+        <div style="width:60px;height:3px;background:linear-gradient(90deg,#C9A94B,#E8C96A);border-radius:2px;margin:0 auto 16px;"></div>
+        <div style="display:inline-block;background:#1A3A2A;color:#E8C96A;font-size:0.85rem;font-weight:600;padding:8px 22px;border-radius:50px;">
+          👨‍🏫 Pembina: Adner Manurung, S.Pd
+        </div>
+      </div>
+
+      <!-- OSIS Utama -->
+      <div style="margin-bottom:40px;">
+        <div style="text-align:center;margin-bottom:24px;">
+          <span style="background:#C9A94B;color:#1A3A2A;font-size:0.75rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;padding:6px 18px;border-radius:50px;">OSIS Inti</span>
+        </div>
+        <!-- Ketua & Wakil -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:500px;margin:0 auto 24px;">
+          <div style="background:#1A3A2A;border-radius:16px;padding:20px;text-align:center;">
+            <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#C9A94B;margin-bottom:6px;">Ketua OSIS</div>
+            <div style="font-family:'Playfair Display',serif;color:#fff;font-size:1.05rem;">Ibrahim Al Asrhy</div>
+          </div>
+          <div style="background:#2D5E3F;border-radius:16px;padding:20px;text-align:center;">
+            <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#C9A94B;margin-bottom:6px;">Wakil OSIS</div>
+            <div style="font-family:'Playfair Display',serif;color:#fff;font-size:1.05rem;">Alvaro Pratama Herlen</div>
+          </div>
+        </div>
+
+        <!-- Divisi Grid -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+
+          <!-- Keamanan & Ketertiban -->
+          <div style="background:#fff;border-radius:16px;padding:22px;box-shadow:0 4px 20px rgba(26,58,42,0.08);border-top:3px solid #1A3A2A;">
+            <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#1A3A2A;margin-bottom:14px;">🛡️ Keamanan & Ketertiban</div>
+            <ul style="list-style:none;padding:0;">
+              <li style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:0.83rem;"><span style="color:#5A6E60;">O1</span><span style="font-weight:600;color:#1A3A2A;">Mario</span></li>
+              <li style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:0.83rem;"><span style="color:#5A6E60;">O2</span><span style="font-weight:600;color:#1A3A2A;">Richi</span></li>
+              <li style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:0.83rem;"><span style="color:#5A6E60;">O3</span><span style="font-weight:600;color:#1A3A2A;">Juan</span></li>
+              <li style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:0.83rem;"><span style="color:#5A6E60;">O4</span><span style="font-weight:600;color:#1A3A2A;">Louis</span></li>
+              <li style="display:flex;justify-content:space-between;padding:7px 0;font-size:0.83rem;"><span style="color:#5A6E60;">O5</span><span style="font-weight:600;color:#1A3A2A;">Naga</span></li>
+            </ul>
+          </div>
+
+          <!-- Pengcheck -->
+          <div style="background:#fff;border-radius:16px;padding:22px;box-shadow:0 4px 20px rgba(26,58,42,0.08);border-top:3px solid #4A8C5C;">
+            <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#2D5E3F;margin-bottom:14px;">✅ Pengcheck</div>
+            <ul style="list-style:none;padding:0;">
+              <li style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:0.83rem;"><span style="color:#5A6E60;">P1</span><span style="font-weight:600;color:#1A3A2A;">Nazwa</span></li>
+              <li style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:0.83rem;"><span style="color:#5A6E60;">P2</span><span style="font-weight:600;color:#1A3A2A;">Salwa</span></li>
+              <li style="display:flex;justify-content:space-between;padding:7px 0;font-size:0.83rem;"><span style="color:#5A6E60;">P3</span><span style="font-weight:600;color:#1A3A2A;">Riska</span></li>
+            </ul>
+          </div>
+
+          <!-- Humas -->
+          <div style="background:#fff;border-radius:16px;padding:22px;box-shadow:0 4px 20px rgba(26,58,42,0.08);border-top:3px solid #C9A94B;">
+            <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#92400E;margin-bottom:14px;">🤝 Humas</div>
+            <ul style="list-style:none;padding:0;">
+              <li style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:0.83rem;"><span style="color:#5A6E60;">Keagamaan</span><span style="font-weight:600;color:#9CA3AF;font-style:italic;">—</span></li>
+              <li style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:0.83rem;"><span style="color:#5A6E60;">Sosial</span><span style="font-weight:600;color:#1A3A2A;">Naila</span></li>
+              <li style="display:flex;justify-content:space-between;padding:7px 0;font-size:0.83rem;"><span style="color:#5A6E60;">Penengah</span><span style="font-weight:600;color:#1A3A2A;">Anggun</span></li>
+            </ul>
+          </div>
+
+          <!-- Sekretaris -->
+          <div style="background:#fff;border-radius:16px;padding:22px;box-shadow:0 4px 20px rgba(26,58,42,0.08);border-top:3px solid #6366F1;">
+            <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#4338CA;margin-bottom:14px;">📋 Sekretaris</div>
+            <ul style="list-style:none;padding:0;">
+              <li style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:0.83rem;"><span style="color:#5A6E60;">S1</span><span style="font-weight:600;color:#1A3A2A;">Yusnita</span></li>
+              <li style="display:flex;justify-content:space-between;padding:7px 0;font-size:0.83rem;"><span style="color:#5A6E60;">S2</span><span style="font-weight:600;color:#1A3A2A;">Syifa</span></li>
+            </ul>
+          </div>
+
+          <!-- Bendahara -->
+          <div style="background:#fff;border-radius:16px;padding:22px;box-shadow:0 4px 20px rgba(26,58,42,0.08);border-top:3px solid #EC4899;">
+            <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#BE185D;margin-bottom:14px;">💰 Bendahara</div>
+            <ul style="list-style:none;padding:0;">
+              <li style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:0.83rem;"><span style="color:#5A6E60;">B1</span><span style="font-weight:600;color:#1A3A2A;">Chalis</span></li>
+              <li style="display:flex;justify-content:space-between;padding:7px 0;font-size:0.83rem;"><span style="color:#5A6E60;">B2</span><span style="font-weight:600;color:#1A3A2A;">Cathrine</span></li>
+            </ul>
+          </div>
+
+          <!-- Divisi PDD -->
+          <div style="background:#fff;border-radius:16px;padding:22px;box-shadow:0 4px 20px rgba(26,58,42,0.08);border-top:3px solid #F97316;">
+            <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#C2410C;margin-bottom:14px;">🎨 Divisi PDD</div>
+            <ul style="list-style:none;padding:0;">
+              <li style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:0.83rem;"><span style="color:#5A6E60;">D1</span><span style="font-weight:600;color:#1A3A2A;">Harimin</span></li>
+              <li style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:0.83rem;"><span style="color:#5A6E60;">D2</span><span style="font-weight:600;color:#1A3A2A;">Mita</span></li>
+              <li style="display:flex;justify-content:space-between;padding:7px 0;font-size:0.83rem;"><span style="color:#5A6E60;">D3</span><span style="font-weight:600;color:#1A3A2A;">Jessica</span></li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- KSP -->
+      <div style="background:#fff;border-radius:20px;padding:32px;box-shadow:0 4px 24px rgba(26,58,42,0.08);margin-bottom:20px;border-left:5px solid #4A8C5C;">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:6px;">
+          <span style="font-size:1.5rem;">🏥</span>
+          <div>
+            <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#4A8C5C;margin-bottom:2px;">Unit Kegiatan</div>
+            <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;color:#1A3A2A;">Kesehatan Siswa Pelajar <span style="color:#C9A94B;">(KSP)</span></h3>
+          </div>
+        </div>
+        <p style="font-size:0.82rem;color:#5A6E60;margin-bottom:20px;">Pembina: <strong style="color:#1A3A2A;">Alvaro Pratama Herlen</strong></p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div>
+            <div style="font-size:0.7rem;font-weight:700;color:#2D5E3F;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">Pengurus</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;justify-content:space-between;background:#F0F9F4;border-radius:10px;padding:10px 14px;">
+                <span style="font-size:0.82rem;color:#5A6E60;">Ketua KSP</span>
+                <span style="font-size:0.82rem;font-weight:700;color:#1A3A2A;">Kheysa</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;background:#F0F9F4;border-radius:10px;padding:10px 14px;">
+                <span style="font-size:0.82rem;color:#5A6E60;">Wakil KSP</span>
+                <span style="font-size:0.82rem;font-weight:700;color:#1A3A2A;">Vhira</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:0.7rem;font-weight:700;color:#2D5E3F;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">Anggota</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+              <div style="background:#F0F9F4;border-radius:8px;padding:7px 12px;font-size:0.8rem;font-weight:600;color:#1A3A2A;">Reva</div>
+              <div style="background:#F0F9F4;border-radius:8px;padding:7px 12px;font-size:0.8rem;font-weight:600;color:#1A3A2A;">Azkia</div>
+              <div style="background:#F0F9F4;border-radius:8px;padding:7px 12px;font-size:0.8rem;font-weight:600;color:#1A3A2A;">Syifa</div>
+              <div style="background:#F0F9F4;border-radius:8px;padding:7px 12px;font-size:0.8rem;font-weight:600;color:#1A3A2A;">Salsa</div>
+              <div style="background:#F0F9F4;border-radius:8px;padding:7px 12px;font-size:0.8rem;font-weight:600;color:#1A3A2A;">Fifi</div>
+              <div style="background:#F0F9F4;border-radius:8px;padding:7px 12px;font-size:0.8rem;font-weight:600;color:#1A3A2A;">Nadhira</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BSP -->
+      <div style="background:#fff;border-radius:20px;padding:32px;box-shadow:0 4px 24px rgba(26,58,42,0.08);border-left:5px solid #C9A94B;">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:6px;">
+          <span style="font-size:1.5rem;">♻️</span>
+          <div>
+            <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#C9A94B;margin-bottom:2px;">Unit Kegiatan</div>
+            <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;color:#1A3A2A;">Bank Sampah Pelajar <span style="color:#C9A94B;">(BSP)</span></h3>
+          </div>
+        </div>
+        <p style="font-size:0.82rem;color:#5A6E60;margin-bottom:20px;">Pembina: <strong style="color:#1A3A2A;">Ibrahim Al Asrhy</strong></p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div>
+            <div style="font-size:0.7rem;font-weight:700;color:#92400E;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">Pengurus</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;justify-content:space-between;background:#FEF9E7;border-radius:10px;padding:10px 14px;">
+                <span style="font-size:0.82rem;color:#5A6E60;">Ketua BSP</span>
+                <span style="font-size:0.82rem;font-weight:700;color:#1A3A2A;">Rapip</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;background:#FEF9E7;border-radius:10px;padding:10px 14px;">
+                <span style="font-size:0.82rem;color:#5A6E60;">Wakil BSP</span>
+                <span style="font-size:0.82rem;font-weight:700;color:#1A3A2A;">Ghazi</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:0.7rem;font-weight:700;color:#92400E;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">Anggota</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+              <div style="background:#FEF9E7;border-radius:8px;padding:7px 12px;font-size:0.8rem;font-weight:600;color:#1A3A2A;">Gibran</div>
+              <div style="background:#FEF9E7;border-radius:8px;padding:7px 12px;font-size:0.8rem;font-weight:600;color:#1A3A2A;">Haikal</div>
+              <div style="background:#FEF9E7;border-radius:8px;padding:7px 12px;font-size:0.8rem;font-weight:600;color:#1A3A2A;">Dimas</div>
+              <div style="background:#FEF9E7;border-radius:8px;padding:7px 12px;font-size:0.8rem;font-weight:600;color:#1A3A2A;">Fattah</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -823,24 +1042,58 @@
     <p>Ikuti terus perkembangan OSIS kami</p>
   </div>
 
-  <div class="sosmed-cards">
-    <div class="sosmed-card">
-      <div class="sosmed-icon">📸</div>
-      <div class="sosmed-platform">Instagram</div>
-      <div class="sosmed-handle">@osis_smptamsisbatam</div>
-      <a href="https://instagram.com/osis_smptamsisbatam" target="_blank" class="sosmed-btn btn-ig">Kunjungi</a>
+  <!-- OSIS Section -->
+  <div style="max-width:1000px;margin:0 auto;padding:60px 40px 20px;">
+    <div style="text-align:center;margin-bottom:36px;">
+      <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#4A8C5C;margin-bottom:8px;">Akun Resmi</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3vw,2.2rem);color:#1A3A2A;">OSIS <span style="color:#C9A94B;">SMP Taman Siswa Batam</span></h2>
+      <div style="width:50px;height:3px;background:linear-gradient(90deg,#C9A94B,#E8C96A);border-radius:2px;margin:14px auto 0;"></div>
     </div>
-    <div class="sosmed-card">
-      <div class="sosmed-icon">🎵</div>
-      <div class="sosmed-platform">TikTok</div>
-      <div class="sosmed-handle">@osismptamsisbatam</div>
-      <a href="https://tiktok.com/@osismptamsisbatam" target="_blank" class="sosmed-btn btn-tt">Kunjungi</a>
+    <div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-bottom:60px;">
+      <div class="sosmed-card">
+        <div class="sosmed-icon">📸</div>
+        <div class="sosmed-platform">Instagram · OSIS</div>
+        <div class="sosmed-handle">@osis_smptamsisbatam</div>
+        <a href="https://instagram.com/osis_smptamsisbatam" target="_blank" class="sosmed-btn btn-ig">Kunjungi</a>
+      </div>
+      <div class="sosmed-card">
+        <div class="sosmed-icon">🎵</div>
+        <div class="sosmed-platform">TikTok · OSIS</div>
+        <div class="sosmed-handle">@osismptamsisbatam</div>
+        <a href="https://tiktok.com/@osismptamsisbatam" target="_blank" class="sosmed-btn btn-tt">Kunjungi</a>
+      </div>
+      <div class="sosmed-card">
+        <div class="sosmed-icon">🌐</div>
+        <div class="sosmed-platform">Website Sekolah</div>
+        <div class="sosmed-handle">tamansiswabatam.com</div>
+        <a href="https://tamansiswabatam.com" target="_blank" class="sosmed-btn btn-web">Kunjungi</a>
+      </div>
     </div>
-    <div class="sosmed-card">
-      <div class="sosmed-icon">🌐</div>
-      <div class="sosmed-platform">Website Sekolah</div>
-      <div class="sosmed-handle">tamansiswabatam.com</div>
-      <a href="https://tamansiswabatam.com" target="_blank" class="sosmed-btn btn-web">Kunjungi</a>
+  </div>
+
+  <!-- Divider -->
+  <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(201,169,75,0.3),transparent);margin:0 40px;"></div>
+
+  <!-- Sekolah Section -->
+  <div style="max-width:1000px;margin:0 auto;padding:50px 40px 70px;">
+    <div style="text-align:center;margin-bottom:36px;">
+      <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#4A8C5C;margin-bottom:8px;">Akun Resmi</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3vw,2.2rem);color:#1A3A2A;">Perguruan <span style="color:#C9A94B;">Taman Siswa Batam</span></h2>
+      <div style="width:50px;height:3px;background:linear-gradient(90deg,#C9A94B,#E8C96A);border-radius:2px;margin:14px auto 0;"></div>
+    </div>
+    <div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;">
+      <div class="sosmed-card">
+        <div class="sosmed-icon">📸</div>
+        <div class="sosmed-platform">Instagram · Sekolah</div>
+        <div class="sosmed-handle">@tamansiswabatam</div>
+        <a href="https://instagram.com/tamansiswabatam" target="_blank" class="sosmed-btn btn-ig">Kunjungi</a>
+      </div>
+      <div class="sosmed-card">
+        <div class="sosmed-icon">🎵</div>
+        <div class="sosmed-platform">TikTok · Sekolah</div>
+        <div class="sosmed-handle">@taman.siswa.batam</div>
+        <a href="https://tiktok.com/@taman.siswa.batam" target="_blank" class="sosmed-btn btn-tt">Kunjungi</a>
+      </div>
     </div>
   </div>
 
@@ -1193,6 +1446,168 @@
   </footer>
 </div>
 
+
+<!-- ===================== SPMB ===================== -->
+<div id="spmb" class="page">
+
+  <!-- Hero -->
+  <div style="background:linear-gradient(135deg,#1A3A2A 0%,#2D5E3F 60%,#1e4d30 100%);padding:70px 40px 80px;text-align:center;position:relative;overflow:hidden;">
+    <div style="position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23C9A94B' fill-opacity='0.05'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");"></div>
+    <div style="position:relative;z-index:2;">
+      <div style="display:inline-block;border:1.5px solid rgba(201,169,75,0.4);color:#E8C96A;font-size:0.7rem;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;padding:7px 20px;border-radius:50px;margin-bottom:22px;background:rgba(201,169,75,0.08);">Perguruan Taman Siswa Batam</div>
+      <h1 style="font-family:'Playfair Display',serif;color:#FAFAF8;font-size:clamp(2.2rem,6vw,3.8rem);margin-bottom:10px;">SPMB</h1>
+      <p style="color:#C9A94B;font-family:'Playfair Display',serif;font-style:italic;font-size:1.1rem;margin-bottom:6px;">Seleksi Penerimaan Murid Baru</p>
+      <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;">TK · SD · SMP Taman Siswa Batam</p>
+    </div>
+  </div>
+
+  <!-- Beasiswa Banner -->
+  <div style="background:linear-gradient(90deg,#C9A94B,#E8C96A);padding:18px 40px;text-align:center;">
+    <p style="color:#1A3A2A;font-weight:700;font-size:0.95rem;">🎓 BEASISWA 50% bagi Siswa Tidak Mampu — Daftarkan Sekarang!</p>
+  </div>
+
+  <div style="max-width:1000px;margin:0 auto;padding:70px 40px;">
+
+    <!-- Biaya Pendaftaran -->
+    <div style="margin-bottom:60px;">
+      <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#4A8C5C;margin-bottom:10px;">Investasi Pendidikan</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.6rem,4vw,2.4rem);color:#1A3A2A;margin-bottom:8px;">Biaya <span style="color:#C9A94B;">Pendaftaran</span></h2>
+      <div style="width:60px;height:3px;background:linear-gradient(90deg,#C9A94B,#E8C96A);border-radius:2px;margin-bottom:36px;"></div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:24px;">
+        <!-- TK -->
+        <div style="background:linear-gradient(145deg,#1A3A2A,#2D5E3F);border-radius:24px;padding:36px 28px;text-align:center;box-shadow:0 8px 40px rgba(26,58,42,0.18);position:relative;overflow:hidden;">
+          <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:rgba(201,169,75,0.08);"></div>
+          <div style="font-size:2.2rem;margin-bottom:14px;">🎨</div>
+          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#C9A94B;margin-bottom:8px;">Taman Kanak-Kanak</div>
+          <div style="font-family:'Playfair Display',serif;color:#fff;font-size:1.9rem;font-weight:700;margin-bottom:4px;">Rp 500.000</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:0.78rem;">Biaya Pendaftaran</div>
+        </div>
+        <!-- SD -->
+        <div style="background:linear-gradient(145deg,#1A3A2A,#2D5E3F);border-radius:24px;padding:36px 28px;text-align:center;box-shadow:0 8px 40px rgba(26,58,42,0.18);position:relative;overflow:hidden;border:2px solid rgba(201,169,75,0.3);">
+          <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:rgba(201,169,75,0.1);"></div>
+          <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);background:#C9A94B;color:#1A3A2A;font-size:0.62rem;font-weight:700;letter-spacing:0.1em;padding:3px 12px;border-radius:50px;white-space:nowrap;">POPULER</div>
+          <div style="font-size:2.2rem;margin-bottom:14px;margin-top:8px;">📚</div>
+          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#C9A94B;margin-bottom:8px;">Sekolah Dasar</div>
+          <div style="font-family:'Playfair Display',serif;color:#fff;font-size:1.9rem;font-weight:700;margin-bottom:4px;">Rp 1.000.000</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:0.78rem;">Biaya Pendaftaran</div>
+        </div>
+        <!-- SMP -->
+        <div style="background:linear-gradient(145deg,#1A3A2A,#2D5E3F);border-radius:24px;padding:36px 28px;text-align:center;box-shadow:0 8px 40px rgba(26,58,42,0.18);position:relative;overflow:hidden;">
+          <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:rgba(201,169,75,0.08);"></div>
+          <div style="font-size:2.2rem;margin-bottom:14px;">🏫</div>
+          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#C9A94B;margin-bottom:8px;">Sekolah Menengah Pertama</div>
+          <div style="font-family:'Playfair Display',serif;color:#fff;font-size:1.9rem;font-weight:700;margin-bottom:4px;">Rp 1.000.000</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:0.78rem;">Biaya Pendaftaran</div>
+        </div>
+      </div>
+
+      <!-- Beasiswa card -->
+      <div style="background:#FEF9E7;border:2px dashed #C9A94B;border-radius:20px;padding:28px 32px;display:flex;align-items:center;gap:20px;">
+        <div style="font-size:2.5rem;flex-shrink:0;">🎓</div>
+        <div>
+          <h4 style="font-family:'Playfair Display',serif;color:#1A3A2A;font-size:1.15rem;margin-bottom:6px;">Beasiswa 50% untuk Siswa Tidak Mampu</h4>
+          <p style="color:#5A6E60;font-size:0.88rem;line-height:1.7;">Perguruan Taman Siswa Batam membuka kesempatan beasiswa 50% bagi siswa/siswi dari keluarga kurang mampu. Hubungi pihak sekolah untuk informasi lebih lanjut mengenai syarat dan prosedur pengajuan beasiswa.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fasilitas -->
+    <div style="margin-bottom:60px;">
+      <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#4A8C5C;margin-bottom:10px;">Unggulan Sekolah</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.6rem,4vw,2.4rem);color:#1A3A2A;margin-bottom:8px;">Fasilitas <span style="color:#C9A94B;">Lengkap</span></h2>
+      <div style="width:60px;height:3px;background:linear-gradient(90deg,#C9A94B,#E8C96A);border-radius:2px;margin-bottom:36px;"></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+        <div style="background:#fff;border-radius:16px;padding:24px 16px;text-align:center;box-shadow:0 4px 20px rgba(26,58,42,0.07);border-top:3px solid #1A3A2A;transition:transform 0.2s;">
+          <div style="font-size:1.8rem;margin-bottom:10px;">❄️</div>
+          <div style="font-size:0.82rem;font-weight:700;color:#1A3A2A;line-height:1.4;">Ruang Kelas SMP Ber-AC</div>
+        </div>
+        <div style="background:#fff;border-radius:16px;padding:24px 16px;text-align:center;box-shadow:0 4px 20px rgba(26,58,42,0.07);border-top:3px solid #1A3A2A;">
+          <div style="font-size:1.8rem;margin-bottom:10px;">🕌</div>
+          <div style="font-size:0.82rem;font-weight:700;color:#1A3A2A;line-height:1.4;">Musholla</div>
+        </div>
+        <div style="background:#fff;border-radius:16px;padding:24px 16px;text-align:center;box-shadow:0 4px 20px rgba(26,58,42,0.07);border-top:3px solid #1A3A2A;">
+          <div style="font-size:1.8rem;margin-bottom:10px;">🚻</div>
+          <div style="font-size:0.82rem;font-weight:700;color:#1A3A2A;line-height:1.4;">Toilet</div>
+        </div>
+        <div style="background:#fff;border-radius:16px;padding:24px 16px;text-align:center;box-shadow:0 4px 20px rgba(26,58,42,0.07);border-top:3px solid #1A3A2A;">
+          <div style="font-size:1.8rem;margin-bottom:10px;">🍜</div>
+          <div style="font-size:0.82rem;font-weight:700;color:#1A3A2A;line-height:1.4;">Kantin</div>
+        </div>
+        <div style="background:#fff;border-radius:16px;padding:24px 16px;text-align:center;box-shadow:0 4px 20px rgba(26,58,42,0.07);border-top:3px solid #C9A94B;">
+          <div style="font-size:1.8rem;margin-bottom:10px;">⚽</div>
+          <div style="font-size:0.82rem;font-weight:700;color:#1A3A2A;line-height:1.4;">Lapangan Olahraga</div>
+        </div>
+        <div style="background:#fff;border-radius:16px;padding:24px 16px;text-align:center;box-shadow:0 4px 20px rgba(26,58,42,0.07);border-top:3px solid #C9A94B;">
+          <div style="font-size:1.8rem;margin-bottom:10px;">🥁</div>
+          <div style="font-size:0.82rem;font-weight:700;color:#1A3A2A;line-height:1.4;">Marching Band</div>
+        </div>
+        <div style="background:#fff;border-radius:16px;padding:24px 16px;text-align:center;box-shadow:0 4px 20px rgba(26,58,42,0.07);border-top:3px solid #C9A94B;">
+          <div style="font-size:1.8rem;margin-bottom:10px;">🎶</div>
+          <div style="font-size:0.82rem;font-weight:700;color:#1A3A2A;line-height:1.4;">Angklung</div>
+        </div>
+        <div style="background:#fff;border-radius:16px;padding:24px 16px;text-align:center;box-shadow:0 4px 20px rgba(26,58,42,0.07);border-top:3px solid #4A8C5C;">
+          <div style="font-size:1.8rem;margin-bottom:10px;">🏥</div>
+          <div style="font-size:0.82rem;font-weight:700;color:#1A3A2A;line-height:1.4;">Ruang UKS</div>
+        </div>
+        <div style="background:#fff;border-radius:16px;padding:24px 16px;text-align:center;box-shadow:0 4px 20px rgba(26,58,42,0.07);border-top:3px solid #4A8C5C;grid-column:span 4;max-width:200px;margin:0 auto;width:100%;">
+          <div style="font-size:1.8rem;margin-bottom:10px;">♻️</div>
+          <div style="font-size:0.82rem;font-weight:700;color:#1A3A2A;line-height:1.4;">Bank Sampah</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Syarat Pendaftaran -->
+    <div style="margin-bottom:40px;">
+      <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#4A8C5C;margin-bottom:10px;">Administrasi</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.6rem,4vw,2.4rem);color:#1A3A2A;margin-bottom:8px;">Syarat <span style="color:#C9A94B;">Pendaftaran</span></h2>
+      <div style="width:60px;height:3px;background:linear-gradient(90deg,#C9A94B,#E8C96A);border-radius:2px;margin-bottom:36px;"></div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;">
+        <div style="background:#fff;border-radius:14px;padding:20px 24px;box-shadow:0 4px 18px rgba(26,58,42,0.07);display:flex;align-items:center;gap:16px;border-left:4px solid #C9A94B;">
+          <div style="width:40px;height:40px;border-radius:10px;background:#1A3A2A;color:#C9A94B;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">📝</div>
+          <span style="font-size:0.9rem;font-weight:600;color:#1A3A2A;">Mengisi Formulir Pendaftaran</span>
+        </div>
+        <div style="background:#fff;border-radius:14px;padding:20px 24px;box-shadow:0 4px 18px rgba(26,58,42,0.07);display:flex;align-items:center;gap:16px;border-left:4px solid #C9A94B;">
+          <div style="width:40px;height:40px;border-radius:10px;background:#1A3A2A;color:#C9A94B;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">👨‍👩‍👧</div>
+          <span style="font-size:0.9rem;font-weight:600;color:#1A3A2A;">Fotokopi Kartu Keluarga</span>
+        </div>
+        <div style="background:#fff;border-radius:14px;padding:20px 24px;box-shadow:0 4px 18px rgba(26,58,42,0.07);display:flex;align-items:center;gap:16px;border-left:4px solid #4A8C5C;">
+          <div style="width:40px;height:40px;border-radius:10px;background:#1A3A2A;color:#C9A94B;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">📸</div>
+          <span style="font-size:0.9rem;font-weight:600;color:#1A3A2A;">Pas Foto Anak Ukuran 3×4</span>
+        </div>
+        <div style="background:#fff;border-radius:14px;padding:20px 24px;box-shadow:0 4px 18px rgba(26,58,42,0.07);display:flex;align-items:center;gap:16px;border-left:4px solid #4A8C5C;">
+          <div style="width:40px;height:40px;border-radius:10px;background:#1A3A2A;color:#C9A94B;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">📄</div>
+          <span style="font-size:0.9rem;font-weight:600;color:#1A3A2A;">Fotokopi Akte Kelahiran</span>
+        </div>
+        <div style="background:#fff;border-radius:14px;padding:20px 24px;box-shadow:0 4px 18px rgba(26,58,42,0.07);display:flex;align-items:center;gap:16px;border-left:4px solid #4A8C5C;">
+          <div style="width:40px;height:40px;border-radius:10px;background:#1A3A2A;color:#C9A94B;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">🏆</div>
+          <span style="font-size:0.9rem;font-weight:600;color:#1A3A2A;">Fotokopi Ijazah</span>
+        </div>
+        <div style="background:#fff;border-radius:14px;padding:20px 24px;box-shadow:0 4px 18px rgba(26,58,42,0.07);display:flex;align-items:center;gap:16px;border-left:4px solid #4A8C5C;">
+          <div style="width:40px;height:40px;border-radius:10px;background:#1A3A2A;color:#C9A94B;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">✍️</div>
+          <span style="font-size:0.9rem;font-weight:600;color:#1A3A2A;">Mengisi Pernyataan Orang Tua</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div style="background:linear-gradient(135deg,#1A3A2A,#2D5E3F);border-radius:24px;padding:44px;text-align:center;">
+      <div style="font-size:2rem;margin-bottom:14px;">📩</div>
+      <h3 style="font-family:'Playfair Display',serif;color:#E8C96A;font-size:1.4rem;margin-bottom:12px;">Daftar Sekarang!</h3>
+      <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;line-height:1.8;max-width:460px;margin:0 auto 28px;">Hubungi kami untuk informasi lebih lanjut mengenai pendaftaran, jadwal penerimaan, dan beasiswa.</p>
+      <a href="https://wa.me/message/6JIAJNPYG3YCO1" target="_blank" style="display:inline-flex;align-items:center;gap:12px;background:#25D366;color:white;font-size:0.9rem;font-weight:700;padding:14px 34px;border-radius:50px;text-decoration:none;letter-spacing:0.03em;">
+        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Hubungi via WhatsApp
+      </a>
+    </div>
+
+  </div>
+
+  <footer style="background:#1A3A2A;color:rgba(255,255,255,0.5);text-align:center;padding:28px;font-size:0.82rem;border-top:1.5px solid rgba(201,169,75,0.2);">
+    © 2026 <span style="color:#C9A94B;">OSIS SMP Taman Siswa Batam</span> · Salam Dan Bahagia
+  </footer>
+</div>
+
 <script>
   function showPage(id, btn) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -1200,8 +1615,14 @@
     document.getElementById(id).classList.add('active');
     if (btn) btn.classList.add('active');
     window.scrollTo(0, 0);
+    // close mobile menu
+    document.getElementById('navLinks').classList.remove('open');
+    document.getElementById('hamburger').classList.remove('open');
+  }
+  function toggleMenu() {
+    document.getElementById('navLinks').classList.toggle('open');
+    document.getElementById('hamburger').classList.toggle('open');
   }
 </script>
 </body>
 </html>
-
